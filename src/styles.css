@@ -1,0 +1,36 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.hero-section {
+    background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.hero-logo {
+    max-height: 320px;
+    object-fit: contain;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    background: #fff;
+    padding: 16px;
+}
+
+.hero-placeholder,
+.placeholder-box {
+    background-color: #e9ecef;
+    color: #6c757d;
+    border-radius: 12px;
+    min-height: 220px;
+    font-weight: 600;
+}
+
+.hero-placeholder {
+    min-height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-title {
+    min-height: 48px;
+}
