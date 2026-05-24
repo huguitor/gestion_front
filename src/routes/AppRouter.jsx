@@ -12,44 +12,52 @@ import Carrito from "../pages/Carrito";
 import MisPedidos from "../pages/MisPedidos";
 import MiPedidoDetalle from "../pages/MiPedidoDetalle";
 
-import { modules } from "../config/modules";
+import { useEmpresa } from "../context/EmpresaContext";
+
+function AppRoutes() {
+    const { modulos = {} } = useEmpresa();
+
+    return (
+        <Routes>
+            <Route path="/" element={<Home />} />
+
+            {modulos.productos && (
+                <>
+                    <Route path="/productos" element={<CatalogoProductos />} />
+                    <Route path="/servicios" element={<CatalogoServicios />} />
+                    <Route path="/productos/:slug" element={<ProductoDetalle />} />
+                    <Route path="/servicios/:slug" element={<ServicioDetalle />} />
+                </>
+            )}
+
+            <Route path="/login" element={<Login />} />
+
+            {modulos.registro && (
+                <Route path="/registro" element={<Registro />} />
+            )}
+
+            <Route path="/mi-perfil" element={<MiPerfil />} />
+
+            {modulos.carrito && modulos.pedidos && (
+                <Route path="/carrito" element={<Carrito />} />
+            )}
+
+            {modulos.pedidos && (
+                <>
+                    <Route path="/mis-pedidos" element={<MisPedidos />} />
+                    <Route path="/mis-pedidos/:id" element={<MiPedidoDetalle />} />
+                </>
+            )}
+
+            <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+    );
+}
 
 function AppRouter() {
     return (
         <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<Home />} />
-
-                {modules.productos && (
-                    <>
-                        <Route path="/productos" element={<CatalogoProductos />} />
-                        <Route path="/servicios" element={<CatalogoServicios />} />
-                        <Route path="/productos/:slug" element={<ProductoDetalle />} />
-                        <Route path="/servicios/:slug" element={<ServicioDetalle />} />
-                    </>
-                )}
-
-                <Route path="/login" element={<Login />} />
-
-                {modules.registro && (
-                    <Route path="/registro" element={<Registro />} />
-                )}
-
-                <Route path="/mi-perfil" element={<MiPerfil />} />
-
-                {modules.carrito && modules.pedidos && (
-                    <Route path="/carrito" element={<Carrito />} />
-                )}
-
-                {modules.pedidos && (
-                    <>
-                        <Route path="/mis-pedidos" element={<MisPedidos />} />
-                        <Route path="/mis-pedidos/:id" element={<MiPedidoDetalle />} />
-                    </>
-                )}
-
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+            <AppRoutes />
         </BrowserRouter>
     );
 }
