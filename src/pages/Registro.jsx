@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import api from "../api/client";
 import MainLayout from "../layouts/MainLayout";
 
 function Registro() {
-    const navigate = useNavigate();
 
     const [form, setForm] = useState({
         nombre: "",
@@ -58,11 +57,20 @@ function Registro() {
 
             await api.post("/web-clientes/registro/", payload);
 
-            setSuccess("Registro exitoso. Ahora podés iniciar sesión.");
+            setSuccess(
+                "Cuenta creada correctamente. Te enviamos un correo de verificación. Revisá tu bandeja de entrada para activar la cuenta. Hasta verificar el correo no vas a poder ver precios ni realizar pedidos."
+            );
 
-            setTimeout(() => {
-                navigate("/login");
-            }, 1200);
+            // limpiar formulario
+            setForm({
+                nombre: "",
+                apellido: "",
+                email: "",
+                password: "",
+                password2: "",
+                telefono: "",
+                acepta_terminos: false,
+            });
         } catch (err) {
             console.error("Error registro:", err);
 
@@ -99,7 +107,24 @@ function Registro() {
                                 <h1 className="h3 mb-4 text-center">Registro</h1>
 
                                 {error ? <div className="alert alert-danger">{error}</div> : null}
-                                {success ? <div className="alert alert-success">{success}</div> : null}
+                                {success ? (
+                                    <div className="alert alert-success">
+                                        <h5 className="mb-2">
+                                            ✔ Registro completado
+                                        </h5>
+
+                                        <div>{success}</div>
+
+                                        <hr />
+
+                                        <Link
+                                            to="/login"
+                                            className="btn btn-success btn-sm"
+                                        >
+                                            Ir a iniciar sesión
+                                        </Link>
+                                    </div>
+                                ) : null}
 
                                 <form onSubmit={handleSubmit}>
                                     <div className="row">

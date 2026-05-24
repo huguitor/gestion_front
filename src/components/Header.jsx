@@ -1,9 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 
 function Header({ empresa }) {
     const navigate = useNavigate();
     const { isAuthenticated, user, logout, loadingAuth } = useAuth();
+    const { totalItems } = useCart();
 
     const handleLogout = () => {
         logout();
@@ -26,6 +28,7 @@ function Header({ empresa }) {
                             }}
                         />
                     ) : null}
+
                     <span>{empresa?.nombre_fantasia || "Gestión Front"}</span>
                 </Link>
 
@@ -64,12 +67,27 @@ function Header({ empresa }) {
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/login">Ingresar</Link>
                                 </li>
+
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/registro">Registro</Link>
                                 </li>
                             </>
                         ) : (
                             <>
+                                <li className="nav-item">
+                                    <Link
+                                        className="nav-link position-relative"
+                                        to="/carrito"
+                                    >
+                                        🛒 Carrito
+                                        {totalItems > 0 && (
+                                            <span className="badge rounded-pill bg-success ms-1">
+                                                {totalItems}
+                                            </span>
+                                        )}
+                                    </Link>
+                                </li>
+
                                 <li className="nav-item">
                                     <span className="nav-link text-light">
                                         Hola, {user?.nombre || user?.email || "usuario"}
@@ -78,6 +96,15 @@ function Header({ empresa }) {
 
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/mi-perfil">Mi perfil</Link>
+                                </li>
+
+                                <li className="nav-item">
+                                    <Link
+                                        className="nav-link"
+                                        to="/mis-pedidos"
+                                    >
+                                        Mis pedidos
+                                    </Link>
                                 </li>
 
                                 <li className="nav-item">

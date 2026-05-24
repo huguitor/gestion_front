@@ -1,7 +1,17 @@
 import axios from "axios";
 
+// Si existe VITE_API_BASE_URL:
+//   producción → https://api-gestion...
+//
+// Si NO existe:
+//   desarrollo → usar proxy Vite con rutas relativas
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL
+  ? `${import.meta.env.VITE_API_BASE_URL}/api`
+  : "/api";
+
 const api = axios.create({
-  baseURL: "http://192.168.0.14:8000/api",
+  baseURL: BASE_URL,
 });
 
 api.interceptors.request.use((config) => {

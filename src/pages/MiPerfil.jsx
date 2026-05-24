@@ -13,6 +13,7 @@ function MiPerfil() {
     });
 
     const [loadingSave, setLoadingSave] = useState(false);
+    const [loadingVerificacion, setLoadingVerificacion] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
@@ -86,6 +87,35 @@ function MiPerfil() {
             }
         } finally {
             setLoadingSave(false);
+        }
+    };
+
+    const reenviarVerificacion = async () => {
+        try {
+            setLoadingVerificacion(true);
+            setError("");
+            setSuccess("");
+
+            const res = await api.post(
+                "/web-clientes/reenviar-verificacion-email/",
+                {
+                    next: "/",
+                }
+            );
+
+            setSuccess(
+                res.data.detail ||
+                "Te enviamos un nuevo correo de verificación."
+            );
+        } catch (err) {
+            console.error(err);
+
+            setError(
+                err.response?.data?.detail ||
+                "No se pudo reenviar el correo."
+            );
+        } finally {
+            setLoadingVerificacion(false);
         }
     };
 
@@ -173,13 +203,37 @@ function MiPerfil() {
                                     </div>
 
                                     <div className="mb-3">
-                                        <label className="form-label">Email verificado</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            value={user.email_verificado ? "Sí" : "No"}
-                                            disabled
-                                        />
+                                        <label className="form-label">
+                                            Estado del correo
+                                        </label>
+
+                                        {user.email_verificado ? (
+                                            <div className="alert alert-success mb-0">
+                                                🟢 Correo verificado
+                                                <div className="small mt-1">
+                                                    Ya podés ver precios y realizar pedidos.
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="alert alert-warning mb-0">
+                                                <div>
+                                                    🟡 Correo pendiente de verificación
+                                                </div>
+
+                                                <div className="small mt-1">
+                                                    Revisá tu correo electrónico para activar tu cuenta.
+                                                </div>
+
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-warning btn-sm mt-3"
+                                                    disabled={loadingVerificacion}
+                                                    onClick={reenviarVerificacion}
+                                                >
+                                                    {loadingVerificacion ? "Enviando..." : "Reenviar correo"}
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className="mb-3">

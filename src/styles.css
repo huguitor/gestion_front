@@ -2,20 +2,33 @@ body {
     background-color: #f8f9fa;
 }
 
-.hero-section {
-    background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+/* Presentación reducida de la empresa */
+.home-intro-section {
+    background: #ffffff;
+    border-top: 1px solid #e9ecef;
+    border-bottom: 1px solid #e9ecef;
 }
 
-.hero-logo {
-    max-height: 320px;
+.home-intro-logo {
+    max-height: 120px;
     object-fit: contain;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
     background: #fff;
-    padding: 16px;
+    padding: 10px;
 }
 
-.hero-placeholder,
+.home-intro-placeholder {
+    min-height: 120px;
+    background-color: #e9ecef;
+    color: #6c757d;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+/* Placeholder para productos sin imagen */
 .placeholder-box {
     background-color: #e9ecef;
     color: #6c757d;
@@ -24,13 +37,201 @@ body {
     font-weight: 600;
 }
 
-.hero-placeholder {
-    min-height: 320px;
+/* Mantiene títulos de tarjetas más parejos */
+.card-title {
+    min-height: 48px;
+}
+
+.video-thumb-button {
+    position: relative;
+    width: 150px;
+    height: 95px;
+    overflow: hidden;
+    background: #000;
+}
+
+.video-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0.85;
+}
+
+.video-thumb-label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 6px 8px;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.video-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 2000;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 16px;
 }
 
-.card-title {
+.video-modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+}
+
+.video-modal-player {
+    width: 100%;
+    max-height: 85vh;
+    background: #000;
+    border-radius: 12px;
+}
+
+.video-modal-close {
+    position: absolute;
+    top: -44px;
+    right: 0;
+    z-index: 2001;
+}
+
+@media (max-width: 576px) {
+    .video-thumb-button {
+        width: 120px;
+        height: 78px;
+    }
+
+    .video-modal-backdrop {
+        align-items: center;
+        padding: 10px;
+    }
+
+    .video-modal-close {
+        top: -42px;
+        right: 0;
+    }
+}
+
+.media-thumb-button {
+    width: 78px;
+    height: 78px;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.media-thumb-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #0d6efd;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.media-thumb-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #343a40;
+}
+
+.video-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    width: 40px;
+    height: 40px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    font-size: 20px;
+
+    z-index: 20;
+
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .20);
+}
+
+.video-modal-content {
+    position: relative;
+}
+
+.product-card-clickable {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
+}
+
+.product-card-clickable:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+.product-card-clickable {
+
+    cursor: pointer;
+
+    transition:
+        transform .15s ease,
+        box-shadow .15s ease;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    border: 1px solid #dcdcdc;
+
+    background: #ffffff;
+
+    min-height: 100%;
+}
+
+.product-card-clickable:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, .10);
+
+    border-color: #bfbfbf;
+}
+
+.product-card-clickable .card-body {
+
+    border-top:
+        1px solid #ececec;
+
+    padding-top: 14px;
+}
+
+.product-card-clickable .card-title {
+
     min-height: 48px;
+
+    margin-bottom: 10px;
+}
+
+.product-card-clickable .card-text {
+
+    min-height: 44px;
+
+    overflow: hidden;
 }
