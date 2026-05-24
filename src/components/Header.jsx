@@ -1,10 +1,19 @@
 import { Link, useNavigate } from "react-router-dom";
+
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import { modules } from "../config/modules";
 
 function Header({ empresa }) {
     const navigate = useNavigate();
-    const { isAuthenticated, user, logout, loadingAuth } = useAuth();
+
+    const {
+        isAuthenticated,
+        user,
+        logout,
+        loadingAuth,
+    } = useAuth();
+
     const { totalItems } = useCart();
 
     const handleLogout = () => {
@@ -12,10 +21,17 @@ function Header({ empresa }) {
         navigate("/");
     };
 
+    const mostrarCarrito =
+        modules.carrito &&
+        modules.pedidos;
+
     return (
         <header className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
             <div className="container">
-                <Link className="navbar-brand d-flex align-items-center gap-2" to="/">
+                <Link
+                    className="navbar-brand d-flex align-items-center gap-2"
+                    to="/"
+                >
                     {empresa?.logo_principal_url ? (
                         <img
                             src={empresa.logo_principal_url}
@@ -29,7 +45,9 @@ function Header({ empresa }) {
                         />
                     ) : null}
 
-                    <span>{empresa?.nombre_fantasia || "Gestión Front"}</span>
+                    <span>
+                        {empresa?.nombre_fantasia || "Gestión Front"}
+                    </span>
                 </Link>
 
                 <button
@@ -44,49 +62,88 @@ function Header({ empresa }) {
                     <span className="navbar-toggler-icon"></span>
                 </button>
 
-                <div className="collapse navbar-collapse" id="mainNavbar">
+                <div
+                    className="collapse navbar-collapse"
+                    id="mainNavbar"
+                >
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
                         <li className="nav-item">
-                            <Link className="nav-link" to="/">Inicio</Link>
+                            <Link
+                                className="nav-link"
+                                to="/"
+                            >
+                                Inicio
+                            </Link>
                         </li>
 
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/productos">Productos</Link>
-                        </li>
+                        {modules.productos && (
+                            <li className="nav-item">
+                                <Link
+                                    className="nav-link"
+                                    to="/productos"
+                                >
+                                    Productos
+                                </Link>
+                            </li>
+                        )}
 
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/servicios">Servicios</Link>
-                        </li>
+                        {modules.productos && (
+                            <li className="nav-item">
+                                <Link
+                                    className="nav-link"
+                                    to="/servicios"
+                                >
+                                    Servicios
+                                </Link>
+                            </li>
+                        )}
 
                         {loadingAuth ? (
                             <li className="nav-item">
-                                <span className="nav-link disabled">Cargando...</span>
+                                <span className="nav-link disabled">
+                                    Cargando...
+                                </span>
                             </li>
                         ) : !isAuthenticated ? (
                             <>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/login">Ingresar</Link>
+                                    <Link
+                                        className="nav-link"
+                                        to="/login"
+                                    >
+                                        Ingresar
+                                    </Link>
                                 </li>
 
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/registro">Registro</Link>
-                                </li>
+                                {modules.registro && (
+                                    <li className="nav-item">
+                                        <Link
+                                            className="nav-link"
+                                            to="/registro"
+                                        >
+                                            Registro
+                                        </Link>
+                                    </li>
+                                )}
                             </>
                         ) : (
                             <>
-                                <li className="nav-item">
-                                    <Link
-                                        className="nav-link position-relative"
-                                        to="/carrito"
-                                    >
-                                        🛒 Carrito
-                                        {totalItems > 0 && (
-                                            <span className="badge rounded-pill bg-success ms-1">
-                                                {totalItems}
-                                            </span>
-                                        )}
-                                    </Link>
-                                </li>
+                                {mostrarCarrito && (
+                                    <li className="nav-item">
+                                        <Link
+                                            className="nav-link position-relative"
+                                            to="/carrito"
+                                        >
+                                            🛒 Carrito
+
+                                            {totalItems > 0 && (
+                                                <span className="badge rounded-pill bg-success ms-1">
+                                                    {totalItems}
+                                                </span>
+                                            )}
+                                        </Link>
+                                    </li>
+                                )}
 
                                 <li className="nav-item">
                                     <span className="nav-link text-light">
@@ -95,17 +152,24 @@ function Header({ empresa }) {
                                 </li>
 
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/mi-perfil">Mi perfil</Link>
-                                </li>
-
-                                <li className="nav-item">
                                     <Link
                                         className="nav-link"
-                                        to="/mis-pedidos"
+                                        to="/mi-perfil"
                                     >
-                                        Mis pedidos
+                                        Mi perfil
                                     </Link>
                                 </li>
+
+                                {modules.pedidos && (
+                                    <li className="nav-item">
+                                        <Link
+                                            className="nav-link"
+                                            to="/mis-pedidos"
+                                        >
+                                            Mis pedidos
+                                        </Link>
+                                    </li>
+                                )}
 
                                 <li className="nav-item">
                                     <button
