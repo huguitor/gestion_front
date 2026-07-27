@@ -9,7 +9,6 @@ function Header({ empresa }) {
 
     const {
         isAuthenticated,
-        user,
         logout,
         loadingAuth,
     } = useAuth();
@@ -29,6 +28,16 @@ function Header({ empresa }) {
         modulos.carrito &&
         modulos.pedidos;
 
+    const API_BASE_URL =
+        import.meta.env.VITE_API_BASE_URL ||
+        "https://api-gestion.panozosistemas.com.ar";
+
+    const logoSrc = empresa?.logo_url
+        ? empresa.logo_url.startsWith("http")
+            ? empresa.logo_url
+            : `${API_BASE_URL}${empresa.logo_url}`
+        : null;
+
     return (
         <header className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
             <div className="container">
@@ -37,22 +46,24 @@ function Header({ empresa }) {
                     className="navbar-brand d-flex align-items-center gap-2"
                     to="/"
                 >
-                    {empresa?.logo_principal_url && (
+
+                    {logoSrc && (
                         <img
-                            src={empresa.logo_principal_url}
+                            src={logoSrc}
                             alt="logo"
                             style={{
                                 width: "40px",
                                 height: "40px",
-                                objectFit: "cover",
+                                objectFit: "contain",
                                 borderRadius: "8px",
+                                backgroundColor: "white",
                             }}
                         />
                     )}
 
-                    <span>
-                        {empresa?.nombre_fantasia || "Gestión Front"}
-                    </span>
+                    {empresa?.nombre_fantasia && (
+                        <span>{empresa.nombre_fantasia}</span>
+                    )}
 
                 </Link>
 
@@ -81,13 +92,19 @@ function Header({ empresa }) {
                         {modulos.productos && (
                             <>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/productos">
+                                    <Link
+                                        className="nav-link"
+                                        to="/productos"
+                                    >
                                         Productos
                                     </Link>
                                 </li>
 
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/servicios">
+                                    <Link
+                                        className="nav-link"
+                                        to="/servicios"
+                                    >
                                         Servicios
                                     </Link>
                                 </li>
@@ -98,7 +115,10 @@ function Header({ empresa }) {
                             !isAuthenticated && (
                                 <>
                                     <li className="nav-item">
-                                        <Link className="nav-link" to="/login">
+                                        <Link
+                                            className="nav-link"
+                                            to="/login"
+                                        >
                                             Ingresar
                                         </Link>
                                     </li>

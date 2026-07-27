@@ -11,7 +11,7 @@ function Carrito() {
         totalItems,
         totalPedido,
         cambiarCantidad,
-        eliminarProducto,
+        eliminarItem,
         vaciarCarrito,
     } = useCart();
 
@@ -26,11 +26,12 @@ function Carrito() {
     const generarMensajeWhatsApp = (pedidoId = null) => {
         const cliente = user?.nombre || user?.email || "Cliente web";
 
-        const lineasProductos = items.map((item, index) => {
+        const lineasItems = items.map((item, index) => {
             const subtotal = item.precio_venta * item.cantidad;
+            const etiquetaTipo = item.tipo === "servicio" ? "Servicio" : "Producto";
 
-            return `${index + 1}) ${item.nombre}
-SKU: ${item.sku || "Sin SKU"}
+            return `${index + 1}) [${etiquetaTipo}] ${item.nombre}
+Código: ${item.sku || "Sin código"}
 Cantidad: ${item.cantidad}
 Precio unitario: $${item.precio_venta}
 Subtotal: $${subtotal.toFixed(2)}`;
@@ -42,10 +43,10 @@ ${pedidoId ? `Pedido web N°: ${pedidoId}\n` : ""}
 Cliente: ${cliente}
 Email: ${user?.email || "No informado"}
 
-Productos:
-${lineasProductos.join("\n\n")}
+Detalle del pedido:
+${lineasItems.join("\n\n")}
 
-Cantidad total de productos: ${totalItems}
+Cantidad total de ítems: ${totalItems}
 Total estimado: $${totalPedido.toFixed(2)}
 
 Quedo atento/a a la confirmación.`;
@@ -71,10 +72,11 @@ Quedo atento/a a la confirmación.`;
 
             const payload = {
                 observaciones_cliente: "",
-                items: items.map((item) => ({
-                    producto: item.id,
-                    cantidad: item.cantidad,
-                })),
+                items: items.map((item) =>
+                    item.tipo === "servicio"
+                        ? { servicio: item.id, cantidad: item.cantidad }
+                        : { producto: item.id, cantidad: item.cantidad }
+                ),
             };
 
             const res = await api.post("/pedidos/", payload);
@@ -146,7 +148,7 @@ Quedo atento/a a la confirmación.`;
 
                                     <tbody>
                                         {items.map((item) => (
-                                            <tr key={item.id}>
+                                            <tr key={item.key}>
                                                 <td>
                                                     <div className="d-flex align-items-center gap-3">
                                                         {item.foto_url && (
@@ -165,11 +167,17 @@ Quedo atento/a a la confirmación.`;
                                                         <div>
                                                             <div className="fw-bold">
                                                                 {item.nombre}
+
+                                                                {item.tipo === "servicio" && (
+                                                                    <span className="badge bg-info text-dark ms-2">
+                                                                        Servicio
+                                                                    </span>
+                                                                )}
                                                             </div>
 
                                                             {item.sku && (
                                                                 <small className="text-muted d-block">
-                                                                    SKU: {item.sku}
+                                                                    {item.tipo === "servicio" ? "Código" : "SKU"}: {item.sku}
                                                                 </small>
                                                             )}
 
@@ -195,7 +203,7 @@ Quedo atento/a a la confirmación.`;
                                                         value={item.cantidad}
                                                         onChange={(e) =>
                                                             cambiarCantidad(
-                                                                item.id,
+                                                                item.key,
                                                                 e.target.value
                                                             )
                                                         }
@@ -212,7 +220,7 @@ Quedo atento/a a la confirmación.`;
                                                     <button
                                                         type="button"
                                                         className="btn btn-outline-danger btn-sm"
-                                                        onClick={() => eliminarProducto(item.id)}
+                                                        onClick={() => eliminarItem(item.key)}
                                                     >
                                                         Quitar
                                                     </button>

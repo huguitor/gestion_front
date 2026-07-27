@@ -1,16 +1,75 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/client";
 import MainLayout from "../layouts/MainLayout";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 
 function ServicioDetalle() {
     const { slug } = useParams();
+    const navigate = useNavigate();
+
     const { isAuthenticated, loadingAuth } = useAuth();
+    const { agregarServicio } = useCart();
 
     const [servicio, setServicio] = useState(null);
     const [error, setError] = useState("");
     const [mostrarVideo, setMostrarVideo] = useState(false);
+    const [cantidad, setCantidad] = useState(1);
+
+    const cambiarCantidad = (valor) => {
+        const nuevaCantidad = Number(valor);
+
+        if (!Number.isFinite(nuevaCantidad) || nuevaCantidad < 1) {
+            setCantidad(1);
+            return;
+        }
+
+        setCantidad(Math.floor(nuevaCantidad));
+    };
+
+    const agregarCantidadAlCarrito = () => {
+        for (let i = 0; i < cantidad; i++) {
+            agregarServicio(servicio);
+        }
+    };
+
+    const agregar = () => {
+        agregarCantidadAlCarrito();
+        alert("Servicio agregado al pedido");
+    };
+
+    const hacerPedido = () => {
+        agregarCantidadAlCarrito();
+        navigate("/carrito");
+    };
+
+    const consultarWhatsapp = () => {
+        const telefono = "5492995214846";
+        const urlActual = window.location.href;
+
+        const mensaje = `Hola.
+
+Quiero consultar por este servicio:
+
+Servicio:
+${servicio.nombre}
+
+Código:
+${servicio.codigo_interno || "-"}
+
+Precio:
+${servicio.precio_base ? `$${servicio.precio_base}` : "Consultar"}
+
+Link:
+${urlActual}
+
+Consulta:
+`;
+
+        const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+        window.open(url, "_blank");
+    };
 
     useEffect(() => {
         if (loadingAuth) return;
@@ -107,9 +166,46 @@ function ServicioDetalle() {
                         </p>
 
                         {servicio.precio_base ? (
-                            <h3 className="mt-4">
-                                ${servicio.precio_base}
-                            </h3>
+                            <>
+                                <h3 className="mt-4">
+                                    ${servicio.precio_base}
+                                </h3>
+
+                                <div className="mb-3 mt-3">
+                                    <div className="small text-muted mb-2">
+                                        Cantidad
+                                    </div>
+
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        value={cantidad}
+                                        className="form-control"
+                                        onChange={(e) => cambiarCantidad(e.target.value)}
+                                    />
+                                </div>
+
+                                <button
+                                    className="btn btn-primary w-100 mb-2"
+                                    onClick={hacerPedido}
+                                >
+                                    Hacer pedido
+                                </button>
+
+                                <button
+                                    className="btn btn-outline-primary w-100 mb-2"
+                                    onClick={agregar}
+                                >
+                                    Agregar al carrito
+                                </button>
+
+                                <button
+                                    className="btn btn-success w-100"
+                                    onClick={consultarWhatsapp}
+                                >
+                                    🟢 Consultar por WhatsApp
+                                </button>
+                            </>
                         ) : (
                             <div className="alert alert-info mt-4">
                                 Ingresá para ver precios y realizar pedidos.

@@ -15,16 +15,36 @@ export function EmpresaProvider({ children }) {
         const cargarEmpresa = async () => {
             try {
                 const resHome = await api.get("/web/home/");
-                setEmpresa(resHome.data.empresa || null);
+                const empresaHome = resHome.data.empresa || {};
 
                 const resConfig = await api.get(
                     "/configuracion/configuracion/config_login/"
                 );
 
-                if (resConfig.data?.modulos) {
+                const configLogin = resConfig.data || {};
+
+                setEmpresa({
+                    ...empresaHome,
+                    nombre_fantasia:
+                        configLogin.nombre_fantasia ||
+                        empresaHome.nombre_fantasia,
+                    descripcion_sistema:
+                        configLogin.descripcion_sistema ||
+                        empresaHome.descripcion_sistema,
+                    logo_url:
+                        configLogin.logo_url ||
+                        empresaHome.logo_url ||
+                        empresaHome.logo_principal_url,
+                    logo_absolute_url:
+                        configLogin.logo_absolute_url ||
+                        empresaHome.logo_absolute_url ||
+                        empresaHome.logo_principal_absolute_url,
+                });
+
+                if (configLogin.modulos) {
                     setModulos({
                         ...fallbackModules,
-                        ...resConfig.data.modulos,
+                        ...configLogin.modulos,
                     });
                 }
             } catch (error) {
